@@ -1,0 +1,203 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG1 DIALOGEX 0, 0, 372, 182
+STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
+EXSTYLE WS_EX_ACCEPTFILES
+CAPTION "uNZB"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Load NZB",IDC_LOADNZB,0,0,50,14
+    PUSHBUTTON      "Settings",IDC_SETTINGS,61,0,50,14
+    PUSHBUTTON      "test",IDC_TEST,139,0,50,14,NOT WS_VISIBLE
+    PUSHBUTTON      "test2",IDC_TEST2,196,0,50,14,NOT WS_VISIBLE
+    CONTROL         "Go",IDC_GONOW,"Button",BS_AUTOCHECKBOX | BS_PUSHLIKE | 
+                    WS_TABSTOP,253,0,41,14
+    PUSHBUTTON      "Quit",IDCANCEL,322,0,50,14
+    LTEXT           "status",IDC_STATUS,0,164,345,17,SS_CENTERIMAGE | 
+                    SS_SUNKEN
+END
+
+IDD_SETTINGS DIALOG DISCARDABLE  0, 0, 268, 241
+STYLE WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
+CAPTION "Settings"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_NEWS_SERVER,13,18,190,15,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PORT,40,36,69,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "Use SSL (default port:563)",IDC_USE_SSL,"Button",
+                    BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,19,58,99,10
+    EDITTEXT        IDC_USERNAME,49,78,131,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_PASSWORD,49,94,131,14,ES_AUTOHSCROLL
+    COMBOBOX        IDC_DEFAULT_DIR,7,148,254,86,CBS_DROPDOWN | 
+                    CBS_AUTOHSCROLL | CBS_DISABLENOSCROLL | WS_VSCROLL | 
+                    WS_TABSTOP
+    PUSHBUTTON      "...",IDC_SELECT_DIR,7,169,31,14
+    PUSHBUTTON      "Up",IDC_DL_DIR_UP,49,169,25,12
+    PUSHBUTTON      "Down",IDC_DL_DIR_DOWN,77,169,32,12
+    PUSHBUTTON      "Add",IDC_DL_DIR_ADD,155,169,50,14
+    PUSHBUTTON      "Delete",IDC_DL_DIR_DELETE,211,169,50,14
+    PUSHBUTTON      "Open INI",IDC_OPEN_INI,7,199,50,14
+    EDITTEXT        IDC_THREADS,139,202,22,16,ES_CENTER | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    DEFPUSHBUTTON   "OK",IDOK,7,220,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,211,220,50,14
+    LTEXT           "PORT:",IDC_STATIC,16,40,23,8
+    GROUPBOX        "News Server",IDC_NEWS_GROUP,7,7,254,116
+    GROUPBOX        "Download directory list",IDC_DIRECTORY_GROUP,7,134,254,
+                    55
+    LTEXT           "Username:",IDC_STATIC,14,80,35,8
+    LTEXT           "Password:",IDC_STATIC,15,96,34,8
+    LTEXT           "",IDC_LIST_NUM,112,169,32,12
+    CTEXT           "Threads",IDC_STATIC,106,202,30,15,SS_CENTERIMAGE
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        BOTTOMMARGIN, 181
+    END
+
+    IDD_SETTINGS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 261
+        VERTGUIDE, 49
+        VERTGUIDE, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 234
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON1               ICON    DISCARDABLE     "icon.ico"
+
+#ifndef _MAC
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "Comments", "\0"
+            VALUE "CompanyName", "CZN\0"
+            VALUE "FileDescription", "uNZB\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "uNZB\0"
+            VALUE "LegalCopyright", "Copyright © 2012\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "uNZB.exe\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "CZN uNZB\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // !_MAC
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
