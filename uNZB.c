@@ -720,6 +720,7 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		case IDOK:
 			break;
 		case WM_DESTROY:
+quit:
 			save_list_ini();
 			save_window_ini(hwnd);
 			save_listview();
@@ -816,7 +817,13 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 			}
 			break;
 		}
-		break;		
+		break;
+	case WM_ENDSESSION:
+		if(!wparam)
+			break;
+		if(lparam!=0)
+			break;
+		goto quit;
 	case WM_CLOSE:
 	case WM_QUIT:
 		break;
