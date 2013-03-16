@@ -640,6 +640,17 @@ int load_icon(HWND hwnd)
 	}
 	return FALSE;
 }
+int is_ok_quit(HWND hwnd,char *reason)
+{
+	if(IsDlgButtonChecked(hwnd,IDC_GONOW))
+	{
+		if(MessageBox(hwnd,reason,"uNZB Quit?",MB_OKCANCEL|MB_SYSTEMMODAL)==IDOK)
+			return TRUE;
+		else
+			return FALSE;
+	}
+	return TRUE;
+}
 extern short main_dlg_anchors[];
 LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 {
@@ -720,14 +731,12 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		case IDOK:
 			break;
 		case WM_DESTROY:
-quit:
 			save_list_ini();
 			save_window_ini(hwnd);
 			save_listview();
 		#ifndef _DEBUG
-			if(IsDlgButtonChecked(hwnd,IDC_GONOW))
-				if(MessageBox(hwnd,"Sure you want to quit?","uNZB Quit?",MB_OKCANCEL|MB_SYSTEMMODAL)!=IDOK)
-					break;
+			if(!is_ok_quit(hwnd,"Sure you want to quit?"))
+				break;
 		#endif
 			PostQuitMessage(0);
 			break;
@@ -818,12 +827,28 @@ quit:
 			break;
 		}
 		break;
+	case WM_QUERYENDSESSION:
+		if(!is_ok_quit(hwnd,"End session detected\r\nDownload in progress, ok to quit?"))
+			return 1;
+		else
+			return 0;
+		break;
 	case WM_ENDSESSION:
-		if(!wparam)
-			break;
-		if(lparam!=0)
-			break;
-		goto quit;
+		if(wparam){
+			int count=0;
+			while(any_threads_busy()){
+				halt_threads=TRUE;
+				Sleep(1000);
+				count++;
+				if(count>10)
+					break;
+			}
+			save_list_ini();
+			save_window_ini(hwnd);
+			save_listview();
+		}
+		return 0;
+		break;
 	case WM_CLOSE:
 	case WM_QUIT:
 		break;
@@ -897,7 +922,7 @@ extern HWND hlistview;
 				//if((GetTickCount()-time)>100){
 				{
 					//if(screen_updated)
-					{					
+					{	
 						screen_updated=FALSE;
 						SendMessage(hwindow,msg.message,msg.wParam,msg.lParam);
 						time=GetTickCount();
