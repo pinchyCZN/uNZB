@@ -828,14 +828,19 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		}
 		break;
 	case WM_QUERYENDSESSION:
-		if(!is_ok_quit(hwnd,"End session detected\r\nDownload in progress, ok to quit?"))
-			return 1;
-		else
-			return 0;
+		if(!is_ok_quit(hwnd,"End session detected\r\nDownload in progress, ok to quit?")){
+			SetWindowLong(hwnd,DWL_MSGRESULT,FALSE); //not ok to end session
+			return TRUE;
+		}
+		else{
+			SetWindowLong(hwnd,DWL_MSGRESULT,TRUE); //ok to end session
+			return TRUE;
+		}
 		break;
 	case WM_ENDSESSION:
-		if(wparam){
+		if(wparam){ //session is shutting down for real
 			int count=0;
+			SetWindowText(hwnd,"Shutting down");
 			while(any_threads_busy()){
 				halt_threads=TRUE;
 				Sleep(1000);
@@ -847,7 +852,8 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 			save_window_ini(hwnd);
 			save_listview();
 		}
-		return 0;
+		SetWindowLong(hwnd,DWL_MSGRESULT,0);
+		return TRUE;
 		break;
 	case WM_CLOSE:
 	case WM_QUIT:
