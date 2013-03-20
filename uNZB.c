@@ -90,25 +90,26 @@ UINT CALLBACK OFNHookProc(HWND hDlg,UINT Msg,WPARAM wParam,LPARAM lParam)
 			HWND const dlg     =GetParent(hDlg); 
 			HWND defView =GetDlgItem(dlg,0x0461); 
 			HWND list=GetDlgItem(defView,1);
-			if(init_details)
-			{
-				SendMessage(defView,WM_COMMAND,28716,0); //details view
-				ListView_EnsureVisible(list,last_selection,FALSE);
-				ListView_SetItemState(list,last_selection,LVIS_SELECTED|LVIS_FOCUSED,LVIS_SELECTED|LVIS_FOCUSED);
-				SetFocus(list);
-				init_details=FALSE;
+			if(list!=0){
+				if(init_details)
+				{
+					SendMessage(defView,WM_COMMAND,28716,0); //details view
+					ListView_EnsureVisible(list,last_selection,FALSE);
+					ListView_SetItemState(list,last_selection,LVIS_SELECTED|LVIS_FOCUSED,LVIS_SELECTED|LVIS_FOCUSED);
+					SetFocus(list);
+					init_details=FALSE;
+				}
+				if(ListView_GetItemCount(list)>0)
+				{
+					ListView_SetColumnWidth(list,0,LVSCW_AUTOSIZE);
+					ListView_SetColumnWidth(list,1,LVSCW_AUTOSIZE);
+					ListView_SetColumnWidth(list,2,LVSCW_AUTOSIZE);
+					ListView_SetColumnWidth(list,3,LVSCW_AUTOSIZE);
+				}
+				i=ListView_GetNextItem(list,-1,LVNI_SELECTED);
+				if(i>=0)
+					last_selection=i;
 			}
-			if(ListView_GetItemCount(list)>0)
-			{
-				ListView_SetColumnWidth(list,0,LVSCW_AUTOSIZE);
-				ListView_SetColumnWidth(list,1,LVSCW_AUTOSIZE);
-				ListView_SetColumnWidth(list,2,LVSCW_AUTOSIZE);
-				ListView_SetColumnWidth(list,3,LVSCW_AUTOSIZE);
-			}
-			i=ListView_GetNextItem(list,-1,LVNI_SELECTED);
-			if(i>=0)
-				last_selection=i;
-			
 			hWnd=GetDesktopWindow();
 			if(init_size && GetWindowRect(hWnd,&rect)) //only do at start ,later resizing operations remain
 			{
@@ -659,7 +660,7 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 	static DWORD tick,help=FALSE;
 
 #ifdef _DEBUG
-	if(FALSE)
+	//if(FALSE)
 	if(msg!=WM_MOUSEFIRST&&msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE/*&&msg!=WM_NOTIFY*/)
 	//if(msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE)
 	{
@@ -743,8 +744,17 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		}
 		break;
 	case WM_MOUSEWHEEL:
-		if(GetFocus()!=hlistview)
-			SendMessage(hlistview,msg,wparam,lparam);
+		{
+			WPARAM _wparam=0;
+			if(GetFocus()!=hlistview){
+				_wparam=wparam&0xFFFF0000;
+				if(wparam&MK_CONTROL)
+					_wparam<<=1;
+				else if(wparam&MK_SHIFT)
+					_wparam<<=2;
+				SendMessage(hlistview,msg,_wparam,lparam);
+			}
+		}
 		break;
 	case WM_KEYFIRST:
 		switch(LOWORD(wparam)){
