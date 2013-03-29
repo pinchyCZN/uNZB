@@ -395,17 +395,11 @@ int load_window_ini(HWND hwnd)
 	char str[20];
 	RECT rect;
 	int width=0,height=0,x=0,y=0;
+	int result=FALSE;
 	get_ini_value("window_width",&width);
 	get_ini_value("window_height",&height);
 	get_ini_value("window_xpos",&x);
 	get_ini_value("window_ypos",&y);
-	str[0]=0;
-	if(get_ini_str("window_maximized",str,sizeof(str))){
-		if(strcmp(str,"true")==0){
-			ShowWindow(hwnd,SW_SHOWMAXIMIZED);
-			return TRUE;
-		}
-	}
 	if(GetWindowRect(GetDesktopWindow(),&rect)!=0){
 		int flags=SWP_SHOWWINDOW;
 		if(width<50 || height<50)
@@ -415,9 +409,16 @@ int load_window_ini(HWND hwnd)
 		if(x<((rect.right-rect.left)-50))
 			if(y<((rect.bottom-rect.top)-50))
 				if(SetWindowPos(hwnd,HWND_TOP,x,y,width,height,flags)!=0)
-					return TRUE;
+					result=TRUE;
 	}
-	return FALSE;
+	str[0]=0;
+	if(get_ini_str("window_maximized",str,sizeof(str))){
+		if(strcmp(str,"true")==0){
+			ShowWindow(hwnd,SW_SHOWMAXIMIZED);
+			result=TRUE;
+		}
+	}
+	return result;
 }
 int save_window_ini(HWND hwnd)
 {
@@ -430,8 +431,7 @@ int save_window_ini(HWND hwnd)
 			write_ini_str("window_maximized","true");
 		else
 			write_ini_str("window_maximized","false");
-	}
-	if(GetWindowRect(hwnd,&rect)!=0){
+		rect=wp.rcNormalPosition;
 		str[0]=0;
 		_snprintf(str,sizeof(str),"%i",rect.right-rect.left);
 		write_ini_str("window_width",str);
