@@ -44,6 +44,7 @@ x9x - Debugging output
 enum{SEGMENT_BAD=-1,SEGMENT_NOT_AVAIL=-2,SEGMENT_TIMEOUT=-3};
 HANDLE events[MAX_THREADS+1];
 int threads_busy=0,thread_status=0;
+int global_throttle=0;
 enum{THREAD_DONE,THREAD_ABORTED,THREAD_LOST,THREAD_NC,THREAD_CREDS};
 CRITICAL_SECTION cs;
 
@@ -501,6 +502,8 @@ int dl_file(ssl_context *ssl,int xml)
 			if(downloaded)
 				break;
 		}
+		if(global_throttle>0)
+			Sleep(global_throttle);
 	}
 	return TRUE;
 }

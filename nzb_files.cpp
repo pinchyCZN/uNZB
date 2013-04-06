@@ -11,7 +11,6 @@ int get_listview_file(char *path,int len);
 int get_item_dl_path(int xml,char *str,int len);
 int get_xml_param(int item);
 int find_valid_path(char *path);
-int get_ini_file_path(char **path);
 int	get_ini_str(char *key,char *str,int size);
 int write_ini_str(char *key,char *str);
 int add_item(const char *fname,

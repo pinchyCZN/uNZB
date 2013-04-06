@@ -8,6 +8,16 @@
 #define INI_FNAME "UNZB.ini"
 
 char ini_file[MAX_PATH]={0};
+int get_ini_path(char *path,int len)
+{
+	if(path!=0 && len>0){
+		strncpy(path,ini_file,len);
+		path[len-1]=0;
+		if(find_valid_path(path))
+			return TRUE;
+	}
+	return FALSE;
+}
 int get_listview_file(char *path,int len)
 {
 	char str[MAX_PATH];
@@ -192,7 +202,13 @@ install:
 	restore_last_path();
 	return 0;
 }
-
+int explore_install_folder(HWND hwnd)
+{
+	char path[MAX_PATH]={0};
+	get_ini_path(path,sizeof(path));	
+	ShellExecute(0,"explore",path,NULL,NULL,SW_SHOWNORMAL);
+	return 0;
+}
 int open_ini(HWND hwnd)
 {
 	WIN32_FIND_DATA fd;

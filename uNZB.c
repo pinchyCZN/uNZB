@@ -445,7 +445,16 @@ int save_window_ini(HWND hwnd)
 	}
 	return FALSE;
 }
+int update_throttle_text(HWND hwnd,int ctrl,int value)
+{
+	char str[40]={0};
+	_snprintf(str,sizeof(str),"Throttle %i ms",value);
+	SetDlgItemText(hwnd,ctrl,str);
+	return 0;
+}
 extern short settings_anchors[];
+extern int global_throttle;
+static int scale=10;
 BOOL CALLBACK settings_dlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 {
 	int i,j;
@@ -455,7 +464,8 @@ BOOL CALLBACK settings_dlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 	static HWND grippy=0;
 #ifdef _DEBUG
 	if(FALSE)
-	if(msg!=WM_MOUSEFIRST&&msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE&&msg!=WM_NOTIFY)
+	if(msg!=WM_MOUSEFIRST&&msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE&&msg!=WM_NOTIFY
+		&&msg!=WM_CTLCOLORSTATIC)
 	{
 		if((GetTickCount()-tick)>500)
 			printf("--\n");
@@ -476,6 +486,8 @@ BOOL CALLBACK settings_dlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		SendDlgItemMessage(hwnd,IDC_THREADS,EM_LIMITTEXT,2,0);
 		load_settings(hwnd);
 		load_icon(hwnd);
+		update_throttle_text(hwnd,IDC_THROTTLE_TEXT,global_throttle);
+		SendDlgItemMessage(hwnd,IDC_SLIDER1,TBM_SETPOS,TRUE,global_throttle/scale);
 		break;
 	case WM_SIZE:
 		grippy_move(hwnd,grippy);
@@ -497,6 +509,20 @@ BOOL CALLBACK settings_dlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 		break;
 	case WM_MOUSEACTIVATE:
 		mousetick=GetTickCount();
+		break;
+	case WM_HSCROLL:
+		if(lparam==0) //not scroll control
+			break;
+		switch(LOWORD(wparam)){
+		case TB_THUMBPOSITION:
+		case TB_THUMBTRACK:
+			global_throttle=HIWORD(wparam)*scale;
+			break;
+		default:
+			global_throttle=SendDlgItemMessage(hwnd,IDC_SLIDER1,TBM_GETPOS,0,0)*scale;
+			break;
+		}
+		update_throttle_text(hwnd,IDC_THROTTLE_TEXT,global_throttle);
 		break;
 	case WM_COMMAND:
 		switch(LOWORD(wparam))
@@ -559,6 +585,9 @@ BOOL CALLBACK settings_dlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 			break;
 		case IDC_OPEN_INI:
 			open_ini(hwnd);
+			break;
+		case IDC_EXPLORE:
+			explore_install_folder(hwnd);
 			break;
 		case IDC_THREADS:
 			if(HIWORD(wparam)==EN_CHANGE)
@@ -660,7 +689,7 @@ LRESULT CALLBACK MainDlg(HWND hwnd,UINT msg,WPARAM wparam,LPARAM lparam)
 	static DWORD tick,help=FALSE;
 
 #ifdef _DEBUG
-	//if(FALSE)
+	if(FALSE)
 	if(msg!=WM_MOUSEFIRST&&msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE/*&&msg!=WM_NOTIFY*/)
 	//if(msg!=WM_NCHITTEST&&msg!=WM_SETCURSOR&&msg!=WM_ENTERIDLE)
 	{
