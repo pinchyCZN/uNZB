@@ -1,5 +1,9 @@
+#if _WIN32_WINNT<0x400
 #define _WIN32_WINNT 0x400
+#define COMPILE_MULTIMON_STUBS
+#endif
 #include <windows.h>
+#include <multimon.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <fcntl.h>
@@ -390,31 +394,47 @@ int load_settings(HWND hwnd)
 	return 0;
 
 }
+int get_nearest_monitor(int x,int y,int width,int height,RECT *rect)
+{
+	HMONITOR hmon;
+	MONITORINFO mi;
+	RECT r={0};
+	r.left=x;
+	r.top=y;
+	r.right=x+width;
+	r.bottom=y+height;
+	hmon=MonitorFromRect(&r,MONITOR_DEFAULTTONEAREST);
+    mi.cbSize=sizeof(mi);
+	if(GetMonitorInfo(hmon,&mi)){
+		*rect=mi.rcWork;
+		return TRUE;
+	}
+	return FALSE;
+}
 int load_window_ini(HWND hwnd)
 {
 	char str[20];
-	RECT rect;
+	RECT rect={0};
 	int width=0,height=0,x=0,y=0;
 	int result=FALSE;
 	get_ini_value("window_width",&width);
 	get_ini_value("window_height",&height);
 	get_ini_value("window_xpos",&x);
 	get_ini_value("window_ypos",&y);
-	if(GetWindowRect(GetDesktopWindow(),&rect)!=0){
+	if(get_nearest_monitor(x,y,width,height,&rect)){
 		int flags=SWP_SHOWWINDOW;
 		if(width<50 || height<50)
 			flags|=SWP_NOSIZE;
-		if(x<-32 || y<=-32)
+		if(x>(rect.right-25) || x<(rect.left-25)
+			|| y<(rect.top-25) || y>(rect.bottom-25))
 			flags|=SWP_NOMOVE;
-		if(x<((rect.right-rect.left)-50))
-			if(y<((rect.bottom-rect.top)-50))
-				if(SetWindowPos(hwnd,HWND_TOP,x,y,width,height,flags)!=0)
-					result=TRUE;
+		if(SetWindowPos(hwnd,HWND_TOP,x,y,width,height,flags)!=0)
+			result=TRUE;
 	}
 	str[0]=0;
 	if(get_ini_str("window_maximized",str,sizeof(str))){
 		if(strcmp(str,"true")==0){
-			ShowWindow(hwnd,SW_SHOWMAXIMIZED);
+			PostMessage(hwnd,WM_SYSCOMMAND,SC_MAXIMIZE,0);
 			result=TRUE;
 		}
 	}
