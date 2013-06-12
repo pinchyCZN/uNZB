@@ -519,7 +519,6 @@ DWORD WINAPI dl_thread(LPVOID event)
 	memset(&ssl,0,sizeof(ssl));
 	debug_pf(1,"thread started %08X\n",event);
 	while(WaitForSingleObject(event,INFINITE)==WAIT_OBJECT_0){
-		int doit=0;
 		InterlockedIncrement(&threads_busy);
 		thread_status=0;
 		SetEvent(events[STATUS_EVENT]);
