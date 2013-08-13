@@ -434,20 +434,27 @@ LRESULT APIENTRY sc_listview(
 		}
 		break;
 	case WM_CONTEXTMENU:
-		xpos=LOWORD(lparam);
-		ypos=HIWORD(lparam);
-		if(ypos<=70)
-			TrackPopupMenu(column_menu,TPM_LEFTALIGN,xpos,ypos,0,hlistview,NULL);
-		else if(ypos>70 && ListView_GetSelectedCount(hlistview)>0){
-			if(last_path[0]!=0){
-				MENUITEMINFO mii;
-				mii.cbSize=sizeof(mii);
-				mii.fMask=MIIM_TYPE;
-				mii.fType=MFT_STRING;
-				mii.dwTypeData=last_path;
-				SetMenuItemInfo(item_menu,CMD_SETLASTPATH,FALSE,&mii);
+		{
+			RECT rect={0};
+			HANDLE header;
+			xpos=LOWORD(lparam);
+			ypos=HIWORD(lparam);
+			header=SendMessage(hwnd,LVM_GETHEADER,0,0);
+			if(header!=0)
+				GetWindowRect(header,&rect);
+			if(ypos<=rect.bottom)
+				TrackPopupMenu(column_menu,TPM_LEFTALIGN,xpos,ypos,0,hlistview,NULL);
+			else if(ypos>rect.bottom && ListView_GetSelectedCount(hlistview)>0){
+				if(last_path[0]!=0){
+					MENUITEMINFO mii;
+					mii.cbSize=sizeof(mii);
+					mii.fMask=MIIM_TYPE;
+					mii.fType=MFT_STRING;
+					mii.dwTypeData=last_path;
+					SetMenuItemInfo(item_menu,CMD_SETLASTPATH,FALSE,&mii);
+				}
+				TrackPopupMenu(item_menu,TPM_LEFTALIGN,xpos,ypos,0,hlistview,NULL);
 			}
-			TrackPopupMenu(item_menu,TPM_LEFTALIGN,xpos,ypos,0,hlistview,NULL);
 		}
 		break;
 	case WM_MENUSELECT:

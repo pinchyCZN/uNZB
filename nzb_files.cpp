@@ -177,7 +177,6 @@ extern "C" int set_segment_thread_id(int xml,int index,int thread_id)
 extern "C" int remove_all_thread_id(TiXmlNode *file)
 {
 	TiXmlNode *child=0,*parent=file->FirstChild("segments");
-	int segments=0;
 	if(parent){
 		while(child=parent->IterateChildren(child)){
 			TiXmlElement *seg=child->ToElement();
