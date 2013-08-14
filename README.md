@@ -10,7 +10,9 @@ Features
 --------
 
 multiple threads
+
 right click menu for multiple fav download folders
+
 uses SSL only network connections
 
 
